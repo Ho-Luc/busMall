@@ -17,8 +17,9 @@ var generateRandom = function() { //RNG
 var first = document.getElementById('container1'); //dom IDs
 var second = document.getElementById('container2');
 var third = document.getElementById('container3');
+var hidden = document.getElementById('button'); //hidden
 
-var threeNumbers = [0, 0, 0];
+var threeNumbersGlobal = [];
 var threeRandoms = function() { //makes 3 random # with no repeats
   var threeNumbers = [0, 0, 0];
   while (threeNumbers[0] === threeNumbers[1] || threeNumbers[1] === threeNumbers[2] || threeNumbers[0] === threeNumbers[2]) {
@@ -26,29 +27,64 @@ var threeRandoms = function() { //makes 3 random # with no repeats
     threeNumbers[1] = generateRandom();
     threeNumbers[2] = generateRandom();
   }
+  //displays picture filepath in index.html
   first.src = productCollection[threeNumbers[0]].filepath;
   second.src = productCollection[threeNumbers[1]].filepath;
   third.src = productCollection[threeNumbers[2]].filepath;
-  console.log(threeNumbers);
+  threeNumbersGlobal = threeNumbers;
 }
 threeRandoms();
+
+var fifteenClicks = function () {
+  if (totalCounter < 5) {
+    threeRandoms();
+  } else {
+    totalClicks();
+    hidden.removeAttribute('hidden');
+    first.setAttribute('hidden', true);//makes images hidden
+    second.setAttribute('hidden', true);
+    third.setAttribute('hidden', true);
+  }
+}
 
 first.addEventListener('click', handleClickFirst); //event listeners
 second.addEventListener('click', handleClickSecond);
 third.addEventListener('click', handleClickThird);
+hidden.addEventListener('click', handleFindResults);
 
+function handleFindResults(event) { //makes chart
+  var clicks = document.getElementById('clicks').getContext('2d');
+  var data = { //generates chart after 15 votes
+    labels: products,
+    datasets: [
+      {
+        fillColor: '#0000e6',
+        strokeColor: '#9999ff',
+        data: productClicks
+      },
+    ]
+  };
+  new Chart(clicks).Bar(data);
+}
 function handleClickFirst(event) {
-  productCollection[threeNumbers[0]].clicks += 1;
+  productCollection[threeNumbersGlobal[0]].clicks += 1;
   totalCounter += 1;
-  threeRandoms();
+  fifteenClicks();
 }
 function handleClickSecond(event) {
-  productCollection[threeNumbers[1]].clicks += 1;
+  productCollection[threeNumbersGlobal[1]].clicks += 1;
   totalCounter += 1;
-  threeRandoms();
+  fifteenClicks();
 }
 function handleClickThird(event) {
-  productCollection[threeNumbers[2]].clicks += 1;
+  productCollection[threeNumbersGlobal[2]].clicks += 1;
   totalCounter += 1;
-  threeRandoms();
+  fifteenClicks();
+}
+
+var productClicks = []; //stores ALL product, click totals
+var totalClicks = function() { //calculates click totals
+  for (var i = 0; i < products.length; i++) {
+    productClicks.push(productCollection[i].clicks);
+  }
 }
