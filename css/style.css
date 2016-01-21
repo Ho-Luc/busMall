@@ -2,3 +2,23 @@ section {
   display: inline-flex;
   padding: 25px;
 }
+.bus {
+  color: #d21339;
+  width: 200px;
+  font-weight: bolder;
+}
+.bar {
+  background-color: #d21339;
+  color: white;
+}
+.mid {
+  background-color: #d21339;
+}
+.char {
+  font-weight: bold;
+  color: #d21339;
+}
+
+em {
+  color: #e59999;
+}

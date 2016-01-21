@@ -9,7 +9,7 @@
 * As a business owner, I want an attractive app that helps build the brand, by know which products get the most votes.
 * As a business owner, I want a specific set of images that I've chosen to be featured on the app.
 * As a business owner, I want images the same size, to prevent biases for voting.
-* As a business owner, I want to dsplay each image at least once, to retrieve data for every product, not just random ones.
+* As a business owner, I want to display each image at least once, to retrieve data for every product, not just random ones.
 
 
 ---
@@ -22,3 +22,4 @@
 ---
 * As a user, I want to use an app that quickly and clearly gives me the images and instructions to vote
 * As a user, I enjoy apps that have an attractive design.
+* As a user, I want to have the option to view results.
