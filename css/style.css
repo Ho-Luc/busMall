@@ -20,5 +20,6 @@ section {
 }
 
 em {
+  font-weight: bold;
   color: #e59999;
 }

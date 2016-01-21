@@ -28,22 +28,10 @@ var hidden = document.getElementById('button'); //hidden
 
 var threeNumbersGlobal = [];
 var usedNumbers = [];
-function threeRandoms() { //makes 3 random # with no repeats
-  /*Not really sure if my setup is correct for indexOf. When I console.log the usedNumbers, i get duplicates. this leads me to believe that my logic is off.
-  var threeNumbers = [0, 0, 0];
-
-  while (threeNumbers[0] === threeNumbers[1] || threeNumbers[1] === threeNumbers[2] || threeNumbers[0] === threeNumbers[2]) {
-    threeNumbers[0] = generateRandom();
-    threeNumbers[1] = generateRandom();
-    threeNumbers[2] = generateRandom();
-  if (usedNumbers.indexOf(threeNumbers[0]) === -1 || usedNumbers.indexOf(threeNumbers[1]) === -1 || usedNumbers.indexOf(threeNumbers[2]) === -1) {
-    usedNumbers.push(threeNumbers[0]);
-    usedNumbers.push(threeNumbers[1]);
-    usedNumbers.push(threeNumbers[2]);
- }*/
-  if (totalCounter === 0) { //Super redundant, but for the user stories, each image NEEDS to display at least once!
+function threeRandoms() { //makes 3 random # with no repeatss
+  if (totalCounter === 0) {
     threeNumbers = [0, 1, 2];
-  }
+  } //Super redundant, but for the user stories, each image NEEDS to display at least once!
   if (totalCounter === 1) {
     threeNumbers = [3, 4, 5];
   }
@@ -64,7 +52,7 @@ function threeRandoms() { //makes 3 random # with no repeats
     threeNumbers[2] = generateRandom();
     }
   }
-  first.src = productCollection[threeNumbers[0]].filepath; //displays picture filepath in index.html
+  first.src = productCollection[threeNumbers[0]].filepath; //filepath for index
   second.src = productCollection[threeNumbers[1]].filepath;
   third.src = productCollection[threeNumbers[2]].filepath;
   productCollection[threeNumbers[0]].viewed += 1;
