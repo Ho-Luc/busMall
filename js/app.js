@@ -10,6 +10,21 @@ function RateTheseImages(name) { //constructor
   this.viewed = 0;
   this.percentage = 0;
 }
+
+//create save files
+var productClicks = []; //stores ALL product, click totals
+var productViews = [];
+var chartData = localStorage.getItem('clicksPersist');
+var chartData2 = localStorage.getItem('viewsPersist');
+if (chartData) {
+  productClicks = JSON.parse(chartData);
+  productViews = JSON.parse(chartData2);
+} else {
+  console.log('storage empty, initalizing');
+  localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
+  localStorage.setItem('viewsPersist', JSON.stringify(productViews));
+}
+
 for (var i = 0; i < products.length; i++) { //loop makes objects & pushes to productCollection array
   productCollection.push(new RateTheseImages(products[i]));
 }
@@ -79,20 +94,38 @@ first.addEventListener('click', handleClickFirst); //event listeners
 second.addEventListener('click', handleClickSecond);
 third.addEventListener('click', handleClickThird);
 hidden.addEventListener('click', handleFindResults);
+var deleted = document.getElementById('delete');
+deleted.addEventListener('click', handleDeleteData);
 
+function handleDeleteData(event) {
+  console.log('clearing local storage');
+  localStorage.clear();
+}
 function handleClickFirst(event) {
   productCollection[threeNumbersGlobal[0]].clicks += 1;
   totalCounter += 1;
+  // localStorage.setItem('clicksPersist', JSON.stringify(data));
+  // localStorage.setItem('viewsPersist', JSON.stringify(pdata));
+  // clicks.update();
+  // percent.update();
   fifteenClicks();
 }
 function handleClickSecond(event) {
   productCollection[threeNumbersGlobal[1]].clicks += 1;
   totalCounter += 1;
+  // localStorage.setItem('clicksPersist', JSON.stringify(data));
+  // localStorage.setItem('viewsPersist', JSON.stringify(pdata));
+  // clicks.update();
+  // percent.update();
   fifteenClicks();
 }
 function handleClickThird(event) {
   productCollection[threeNumbersGlobal[2]].clicks += 1;
   totalCounter += 1;
+  // localStorage.setItem('clicksPersist', JSON.stringify(data));
+  // localStorage.setItem('viewsPersist', JSON.stringify(pdata));
+  // clicks.update();
+  // percent.update();
   fifteenClicks();
 }
 function handleFindResults(event) { //makes chart
@@ -118,27 +151,40 @@ function handleFindResults(event) { //makes chart
       }
     ]
   };
-  var pdata = { //generates chart after 15 votes
-    labels: products,
-    datasets: [
-      {
-        fillColor: '#e59999',
-        strokeColor: '#e59999',
-        data: productPercent
-      }
-    ]
-  };
+  // var pdata = { //generates chart after 15 votes
+  //   labels: products,
+  //   datasets: [
+  //     {
+  //       fillColor: '#e59999',
+  //       strokeColor: '#e59999',
+  //       // data: productPercent
+  //     }
+  //   ]
+  // };
   new Chart(clicks).Bar(data);
-  new Chart(percent).Bar(pdata);
+  // new Chart(percent).Bar(pdata);
 }
 
-var productClicks = []; //stores ALL product, click totals
-var productViews = [];
-var productPercent = [];
+
+// var productPercent = [];
 function totalClicks() { //calculates click totals
-  for (var i = 0; i < products.length; i++) {
-    productClicks.push(productCollection[i].clicks);
-    productViews.push(productCollection[i].viewed);
-    productPercent.push(productCollection[i].percentage);
+    if (productClicks.length < 1 || productViews.length < 1) {
+      for (var i = 0; i < products.length; i++) {
+        productClicks.push(productCollection[i].clicks);
+        productViews.push(productCollection[i].viewed);
+        localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
+        localStorage.setItem('viewsPersist', JSON.stringify(productViews));
+
+        // productPercent.push(productCollection[i].percentage);
+      }
+    } else {
+      for (var i = 0; i < products.length; i++) {
+        productClicks[i] += productCollection[i].clicks
+        productViews[i] += productCollection[i].viewed
+        localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
+        localStorage.setItem('viewsPersist', JSON.stringify(productViews));
+      }
+    }
   }
-}
+
+//persist dat in html5local storage
