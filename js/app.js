@@ -3,6 +3,12 @@
 var totalCounter = 0; //global counter
 var productCollection = []; //array that stores all products
 var products = ['bag', 'banana', 'boots', 'chair', 'cthulhu', 'dragon', 'pen', 'scissors', 'shark', 'sweep', 'unicorn', 'usb', 'water-can', 'wine-glass'];
+var productPercent = [];
+var productClicks = []; //stores ALL product, click totals
+var productViews = []; //stores view totals
+var chartData = localStorage.getItem('clicksPersist');
+var chartData2 = localStorage.getItem('viewsPersist');
+
 function RateTheseImages(name) { //constructor
   this.name = name;
   this.filepath = 'img/' + name + '.jpg';
@@ -10,13 +16,7 @@ function RateTheseImages(name) { //constructor
   this.viewed = 0;
   this.percentage = 0;
 }
-
-//create save files
-var productClicks = []; //stores ALL product, click totals
-var productViews = [];
-var chartData = localStorage.getItem('clicksPersist');
-var chartData2 = localStorage.getItem('viewsPersist');
-if (chartData) {
+if (chartData) { //tests to persist data
   productClicks = JSON.parse(chartData);
   productViews = JSON.parse(chartData2);
 } else {
@@ -32,17 +32,24 @@ function generateRandom() { //RNG
   return Math.floor(Math.random() * (products.length));
 }
 var generatePercentage = function() {
-  for (var i = 0; i < products.length; i++) {
-    productCollection[i].percentage = ((productCollection[i].clicks / productCollection[i].viewed) * 100);
+  if (productClicks < 1) {
+    for (var i = 0; i < products.length; i++) {
+      productPercent[i] = ((productCollection[i].clicks / productCollection[i].viewed) * 100);
     }
+  } else {
+    productPercent = [];
+    for (var i = 0; i < products.length; i++) {
+      productPercent[i] = ((productClicks[i] / productViews[i]) * 100);
+    }
+  }
 }
 var first = document.getElementById('container1'); //dom IDs
 var second = document.getElementById('container2');
 var third = document.getElementById('container3');
-var hidden = document.getElementById('button'); //hidden
+var hidden = document.getElementById('button'); //hidden button
+var deleted = document.getElementById('delete'); //hidden clear LS button
 
 var threeNumbersGlobal = [];
-var usedNumbers = [];
 function threeRandoms() { //makes 3 random # with no repeatss
   if (totalCounter === 0) {
     threeNumbers = [0, 1, 2];
@@ -81,8 +88,8 @@ function fifteenClicks() {
   if (totalCounter < 15) {
     threeRandoms();
   } else {
-    generatePercentage();
     totalClicks();
+    generatePercentage();
     hidden.removeAttribute('hidden');
     first.setAttribute('hidden', true);//makes images hidden
     second.setAttribute('hidden', true);
@@ -90,11 +97,29 @@ function fifteenClicks() {
   }
 }
 
+function totalClicks() { //calculates click totals
+  if (productClicks.length < 1 || productViews.length < 1) {
+    for (var i = 0; i < products.length; i++) {
+      productClicks.push(productCollection[i].clicks);
+      productViews.push(productCollection[i].viewed);
+      localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
+      localStorage.setItem('viewsPersist', JSON.stringify(productViews));
+      productPercent.push(productCollection[i].percentage);
+    }
+  } else {
+    for (var i = 0; i < products.length; i++) {
+      productClicks[i] += productCollection[i].clicks
+      productViews[i] += productCollection[i].viewed
+      localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
+      localStorage.setItem('viewsPersist', JSON.stringify(productViews));
+    }
+  }
+}
+
 first.addEventListener('click', handleClickFirst); //event listeners
 second.addEventListener('click', handleClickSecond);
 third.addEventListener('click', handleClickThird);
 hidden.addEventListener('click', handleFindResults);
-var deleted = document.getElementById('delete');
 deleted.addEventListener('click', handleDeleteData);
 
 function handleDeleteData(event) {
@@ -104,28 +129,16 @@ function handleDeleteData(event) {
 function handleClickFirst(event) {
   productCollection[threeNumbersGlobal[0]].clicks += 1;
   totalCounter += 1;
-  // localStorage.setItem('clicksPersist', JSON.stringify(data));
-  // localStorage.setItem('viewsPersist', JSON.stringify(pdata));
-  // clicks.update();
-  // percent.update();
   fifteenClicks();
 }
 function handleClickSecond(event) {
   productCollection[threeNumbersGlobal[1]].clicks += 1;
   totalCounter += 1;
-  // localStorage.setItem('clicksPersist', JSON.stringify(data));
-  // localStorage.setItem('viewsPersist', JSON.stringify(pdata));
-  // clicks.update();
-  // percent.update();
   fifteenClicks();
 }
 function handleClickThird(event) {
   productCollection[threeNumbersGlobal[2]].clicks += 1;
   totalCounter += 1;
-  // localStorage.setItem('clicksPersist', JSON.stringify(data));
-  // localStorage.setItem('viewsPersist', JSON.stringify(pdata));
-  // clicks.update();
-  // percent.update();
   fifteenClicks();
 }
 function handleFindResults(event) { //makes chart
@@ -151,40 +164,16 @@ function handleFindResults(event) { //makes chart
       }
     ]
   };
-  // var pdata = { //generates chart after 15 votes
-  //   labels: products,
-  //   datasets: [
-  //     {
-  //       fillColor: '#e59999',
-  //       strokeColor: '#e59999',
-  //       // data: productPercent
-  //     }
-  //   ]
-  // };
+  var pdata = { //generates chart after 15 votes
+    labels: products,
+    datasets: [
+      {
+        fillColor: '#e59999',
+        strokeColor: '#e59999',
+        data: productPercent
+      }
+    ]
+  };
   new Chart(clicks).Bar(data);
-  // new Chart(percent).Bar(pdata);
+  new Chart(percent).Bar(pdata);
 }
-
-
-// var productPercent = [];
-function totalClicks() { //calculates click totals
-    if (productClicks.length < 1 || productViews.length < 1) {
-      for (var i = 0; i < products.length; i++) {
-        productClicks.push(productCollection[i].clicks);
-        productViews.push(productCollection[i].viewed);
-        localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
-        localStorage.setItem('viewsPersist', JSON.stringify(productViews));
-
-        // productPercent.push(productCollection[i].percentage);
-      }
-    } else {
-      for (var i = 0; i < products.length; i++) {
-        productClicks[i] += productCollection[i].clicks
-        productViews[i] += productCollection[i].viewed
-        localStorage.setItem('clicksPersist', JSON.stringify(productClicks));
-        localStorage.setItem('viewsPersist', JSON.stringify(productViews));
-      }
-    }
-  }
-
-//persist dat in html5local storage
